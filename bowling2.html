@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>滾動的年代：保齡球在台灣 - 視覺升級版</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght=700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'bowling-blue': '#1e3a8a',
+                        'bowling-orange': '#f97316',
+                        'glass-white': 'rgba(255, 255, 255, 0.7)',
+                        'glass-dark': 'rgba(15, 23, 42, 0.6)',
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans TC"', 'sans-serif'],
+                        serif: ['"Noto Serif TC"', 'serif'],
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* 背景動態光球樣式 */
+        .blob-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -1;
+            background-color: #f3f4f6;
+            overflow: hidden;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.6;
+            animation: blob 10s infinite alternate;
+        }
+        .blob-1 { top: -10%; left: -10%; width: 500px; height: 500px; background: #bfdbfe; animation-delay: 0s; }
+        .blob-2 { top: 40%; right: -10%; width: 400px; height: 400px; background: #ffedd5; animation-delay: 2s; }
+        .blob-3 { bottom: -10%; left: 20%; width: 600px; height: 600px; background: #e0e7ff; animation-delay: 4s; }
+
+        /* 毛玻璃通用類別 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        
+        .glass-nav {
+            background: rgba(30, 58, 138, 0.85);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* 文字漸層特效 */
+        .text-gradient {
+            background: linear-gradient(to right, #1e3a8a, #f97316);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .text-gradient-light {
+            background: linear-gradient(to right, #fb923c, #ffffff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Hero 背景 */
+        .hero-bg {
+            background: linear-gradient(135deg, rgba(30, 58, 138, 0.9), rgba(15, 23, 42, 0.8)), url('https://placehold.co/1920x1080/1e3a8a/f97316?text=1990S+BOWLING+ERA'); 
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body class="font-sans text-gray-800 antialiased overflow-x-hidden">
+
+    <div class="blob-bg">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <nav class="glass-nav text-white fixed w-full z-50 shadow-lg transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex-shrink-0 flex items-center gap-2 group cursor-pointer">
+                    <i class="fa-solid fa-bowling-ball text-bowling-orange text-2xl group-hover:rotate-180 transition-transform duration-700"></i>
+                    <span class="font-serif font-bold text-xl tracking-wider">滾動的年代</span>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#home" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">首頁</a>
+                        <a href="#history" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">歷史篇</a>
+                        <a href="#tutorial" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">教學篇</a>
+                        <a href="#equipment" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">裝備篇</a>
+                        <a href="#venues" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">場館篇</a>
+                        <a href="#videos" class="hover:text-bowling-orange hover:bg-white/10 px-3 py-2 rounded-md text-sm font-medium transition-all duration-300">影片區</a>
+                    </div>
+                </div>
+
+                <div class="md:hidden">
+                    <button id="mobile-menu-btn" class="text-white hover:text-bowling-orange focus:outline-none transition-colors">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden glass-nav bg-blue-900/90 backdrop-blur-md">
+            <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+                <a href="#home" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">首頁</a>
+                <a href="#history" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">歷史篇</a>
+                <a href="#tutorial" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">教學篇</a>
+                <a href="#equipment" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">裝備篇</a>
+                <a href="#venues" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">場館篇</a>
+                <a href="#videos" class="block hover:bg-bowling-orange/80 px-3 py-2 rounded-md text-base font-medium text-white">影片區</a>
+            </div>
+        </div>
+    </nav>
+
+    <header id="home" class="hero-bg h-screen flex items-center justify-center relative overflow-hidden">
+        <div class="absolute w-[600px] h-[600px] border-4 border-white/10 rounded-full animate-pulse top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+        <div class="absolute w-[400px] h-[400px] border-4 border-white/20 rounded-full top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"></div>
+
+        <div class="text-center px-4 max-w-4xl mx-auto relative z-10" data-aos="fade-up" data-aos-duration="1500">
+            <h1 class="font-serif text-5xl md:text-8xl font-bold text-white mb-6 drop-shadow-[0_5px_5px_rgba(0,0,0,0.5)]">
+                <span class="block text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-yellow-300 mb-2 text-3xl md:text-4xl font-sans tracking-[0.2em]">ROLLING ERA</span>
+                滾動的年代
+            </h1>
+            <p class="text-gray-200 text-lg md:text-2xl mb-12 leading-relaxed max-w-2xl mx-auto font-light tracking-wide">
+                重新啟動您的保齡球記憶。<br>最完整的入門知識、經典歷史回顧、全台地圖導覽。
+            </p>
+            <a href="#history" class="group relative inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white transition-all duration-200 bg-bowling-orange font-sans rounded-full hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 shadow-[0_0_20px_rgba(249,115,22,0.5)] hover:shadow-[0_0_30px_rgba(249,115,22,0.8)] hover:-translate-y-1">
+                立即滾動 <i class="fa-solid fa-circle-right ml-2 group-hover:translate-x-1 transition-transform"></i>
+            </a>
+        </div>
+        
+        <div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce text-white/50">
+            <i class="fa-solid fa-chevron-down text-3xl"></i>
+        </div>
+    </header>
+
+    <section id="history" class="py-24 relative">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-20" data-aos="fade-down">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold mb-4">
+                    <span class="text-gradient border-b-4 border-bowling-orange pb-2">台灣保齡球興衰史</span>
+                </h2>
+                <p class="text-gray-600 mt-6 text-xl tracking-wide">一段橫跨半世紀，結合娛樂、競技與黑白畫面的經典故事</p>
+            </div>
+
+            <div class="space-y-12">
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/80 transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-right">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                        <div class="md:col-span-1 border-r border-gray-200/50 pr-4">
+                            <h3 class="font-bold text-3xl text-bowling-orange mb-3 flex items-center">
+                                <span class="bg-orange-100 p-3 rounded-full mr-3 text-2xl shadow-inner"><i class="fa-solid fa-globe"></i></span>
+                                起源與傳播
+                            </h3>
+                            <p class="text-gray-500 text-sm font-medium tracking-widest">GLOBAL ROOTS</p>
+                        </div>
+                        <div class="md:col-span-2 space-y-4 text-justify text-gray-700 leading-relaxed">
+                            <p>現代保齡球的根源可追溯到古埃及與德國的<strong>九柱戲 (Nine-pin Skittles)</strong>。直到 19 世紀，為了應對美國各州對九柱戲的禁令，人們將第 10 根球瓶加入並改變排列方式，這才確立了今日的十瓶制 (Ten-pin Bowling)。</p>
+                            <p>保齡球在亞洲的盛行主要受到美國影響，並在日本推廣下迅速普及，間接為後來的台灣熱潮奠定了文化基礎。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/80 transition-all duration-300 transform hover:-translate-y-2 border-l-8 border-bowling-orange" data-aos="fade-left">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                        <div class="md:col-span-1 border-r border-gray-200/50 pr-4">
+                            <h3 class="font-bold text-3xl text-bowling-blue mb-3 flex items-center">
+                                <span class="bg-blue-100 p-3 rounded-full mr-3 text-2xl shadow-inner"><i class="fa-solid fa-fire text-bowling-blue"></i></span>
+                                黃金盛世
+                            </h3>
+                            <p class="text-gray-500 text-sm font-medium tracking-widest">THE GOLDEN ERA (1990s)</p>
+                        </div>
+                        <div class="md:col-span-2 space-y-4 text-justify text-gray-700 leading-relaxed">
+                            <p>1990 年代，隨著台灣經濟高度發展與休閒需求爆發，保齡球館如雨後春筍般出現。球館設施高級、24 小時營業，成為年輕人夜生活、家庭聚會的首選場所。全台球館數量一度超過 <strong>300 間</strong>。</p>
+                            <p class="font-bold text-bowling-blue">技術上的突破，來自台灣選手獨創的「飛碟球」打法，以其高速、低軌道的特性，幫助台灣在國際賽場上屢獲佳績，讓國人對這項運動的熱情達到了頂峰。</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card p-8 rounded-2xl hover:bg-white/80 transition-all duration-300 transform hover:-translate-y-2" data-aos="fade-right">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
+                        <div class="md:col-span-1 border-r border-gray-200/50 pr-4">
+                            <h3 class="font-bold text-3xl text-gray-700 mb-3 flex items-center">
+                                <span class="bg-gray-200 p-3 rounded-full mr-3 text-2xl shadow-inner"><i class="fa-solid fa-arrow-right-arrow-left"></i></span>
+                                當代轉型
+                            </h3>
+                            <p class="text-gray-500 text-sm font-medium tracking-widest">MODERN RENAISSANCE</p>
+                        </div>
+                        <div class="md:col-span-2 space-y-4 text-justify text-gray-700 leading-relaxed">
+                            <p>進入千禧年後，由於娛樂型態多樣化、電玩、KTV 崛起，加上球館火災事件的負面影響，保齡球熱潮逐漸退燒。許多傳統球館歇業。</p>
+                            <p>然而，現今的球館多已轉型為<strong>複合式娛樂中心</strong> (如 E7PLAY, 大魯閣)，提供更舒適、時尚的環境，並結合電玩、撞球、餐飲等，重新吸引年輕族群。專業玩家的社群也持續活躍，致力於推廣曲球 (Hook Ball) 等國際主流打法。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="tutorial" class="py-24 relative">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-white/40 to-transparent pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-bowling-blue mb-4">
+                    <span class="text-gradient border-b-4 border-bowling-orange pb-2">規則與進階技巧</span>
+                </h2>
+                <p class="text-gray-600 text-lg mt-4">掌握計分和正確的投球姿勢，讓您不再洗溝</p>
+            </div>
+
+            <div class="glass-card p-10 rounded-3xl shadow-2xl mb-12 transform transition hover:scale-[1.01]" data-aos="fade-up">
+                <h3 class="font-bold text-3xl text-bowling-blue mb-6 flex items-center border-b border-gray-300 pb-4">
+                    <i class="fa-solid fa-calculator mr-4 text-bowling-orange"></i> 標準計分與球瓶編號
+                </h3>
+                <div class="text-gray-700 text-lg leading-loose">
+                    <p class="mb-4 font-medium">保齡球一局共 10 格 (Frame)，前 9 格有兩次投球機會，第 10 格則視全倒 (Strike) 或補中 (Spare) 的情況，最多可投 3 次。</p>
+                    <ul class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <li class="bg-white/50 p-4 rounded-lg shadow-sm"><strong class="text-bowling-orange text-xl">全倒 (X)</strong><br>第一次投球擊倒全部 10 瓶。得 10 分 + 接下來兩次投球分數。</li>
+                        <li class="bg-white/50 p-4 rounded-lg shadow-sm"><strong class="text-bowling-blue text-xl">補中 (/)</strong><br>第二次投球擊倒剩餘球瓶。得 10 分 + 接下來一次投球分數。</li>
+                        <li class="bg-white/50 p-4 rounded-lg shadow-sm"><strong class="text-gray-600 text-xl">失誤 (-)</strong><br>兩次投球後仍有球瓶站立。分數只計擊倒數。</li>
+                        <li class="bg-white/50 p-4 rounded-lg shadow-sm"><strong class="text-purple-600 text-xl">第十格</strong><br>若達成全倒或補中，可獲得額外投球機會。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/90 transition-all duration-300 transform hover:-translate-y-3 hover:shadow-orange-200/50 hover:shadow-2xl flex flex-col" data-aos="fade-up" data-aos-delay="100">
+                    <div class="w-14 h-14 bg-bowling-orange text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg">1</div>
+                    <h4 class="font-bold text-2xl text-gray-800 mb-4">標準四步助走</h4>
+                    <p class="text-gray-600 mb-6 flex-grow">保持投球節奏與動能的基礎。右手投球者，從右腳開始。</p>
+                    <div class="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                        <ol class="list-decimal list-inside space-y-2 text-gray-700">
+                            <li><strong>推球</strong> (右腳)</li>
+                            <li><strong>下擺</strong> (左腳)</li>
+                            <li><strong>後擺</strong> (右腳高點)</li>
+                            <li><strong>釋放</strong> (左腳滑步)</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/90 transition-all duration-300 transform hover:-translate-y-3 hover:shadow-blue-200/50 hover:shadow-2xl flex flex-col" data-aos="fade-up" data-aos-delay="200">
+                    <div class="w-14 h-14 bg-bowling-blue text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg">2</div>
+                    <h4 class="font-bold text-2xl text-gray-800 mb-4">三角瞄準法</h4>
+                    <p class="text-gray-600 mb-6 flex-grow">不要看球瓶！看球道上的箭頭。</p>
+                    <div class="bg-gray-50/50 p-4 rounded-xl border border-gray-100">
+                        <ul class="list-disc list-inside space-y-2 text-gray-700">
+                            <li>瞄準<strong>第二個箭頭</strong></li>
+                            <li>右手打者瞄 1-3 瓶位</li>
+                            <li>左手打者瞄 1-2 瓶位</li>
+                        </ul>
+                    </div>
+                    <p class="text-xs mt-3 p-2 bg-yellow-100/60 rounded text-yellow-700 font-bold">
+                        <i class="fa-solid fa-lightbulb mr-1"></i> 進階：3-6-9 調整法
+                    </p>
+                </div>
+
+                <div class="glass-card rounded-2xl p-8 hover:bg-white/90 transition-all duration-300 transform hover:-translate-y-3 hover:shadow-purple-200/50 hover:shadow-2xl flex flex-col" data-aos="fade-up" data-aos-delay="300">
+                    <div class="w-14 h-14 bg-purple-600 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-6 shadow-lg">3</div>
+                    <h4 class="font-bold text-2xl text-gray-800 mb-4">球路類型</h4>
+                    <p class="text-gray-600 mb-6 flex-grow">決定您的球路風格與破壞力。</p>
+                    <div class="space-y-3">
+                        <div class="p-3 bg-gray-100/50 rounded-lg">
+                            <span class="block font-bold text-gray-800">直球</span>
+                            <span class="text-sm text-gray-500">路徑筆直，適合新手</span>
+                        </div>
+                        <div class="p-3 bg-orange-50/50 rounded-lg border-l-4 border-orange-400">
+                            <span class="block font-bold text-orange-700">飛碟球 (台灣特產)</span>
+                            <span class="text-sm text-gray-500">高速旋轉，如飛碟般</span>
+                        </div>
+                        <div class="p-3 bg-blue-50/50 rounded-lg border-l-4 border-blue-600">
+                            <span class="block font-bold text-blue-800">曲球 (Hook)</span>
+                            <span class="text-sm text-gray-500">大角度轉彎，高破壞力</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="equipment" class="py-24 bg-gradient-to-br from-bowling-blue to-blue-900 text-white relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div class="absolute bottom-0 left-0 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-down">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-white mb-4">
+                    <span class="text-gradient-light border-b-4 border-white/30 pb-2">裝備的科學</span>
+                </h2>
+                <p class="text-blue-200 text-lg mt-4">了解您的武器，就是邁向高分的開始</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300" data-aos="fade-right">
+                    <h3 class="text-3xl font-bold text-bowling-orange mb-6 flex items-center"><i class="fa-solid fa-circle-dot mr-4"></i> 球體材質分類</h3>
+                    <ul class="space-y-6">
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">聚酯球 (Polyester)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">摩擦力低，球路直，適合新手與補中。</p>
+                        </li>
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">反應樹脂球 (Reactive)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">摩擦力高，曲球首選，尾段轉彎犀利。</p>
+                        </li>
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">聚氨酯球 (Urethane)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">可預測性高，控制型玩家的最愛。</p>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-md p-8 rounded-2xl border border-white/20 shadow-2xl hover:bg-white/15 transition-all duration-300" data-aos="fade-left">
+                    <h3 class="text-3xl font-bold text-bowling-orange mb-6 flex items-center"><i class="fa-solid fa-shoe-prints mr-4"></i> 球鞋與配件</h3>
+                    <ul class="space-y-6">
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">專用球鞋 (Shoes)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">滑步腳(滑面) vs 制動腳(橡膠)。<strong>保護球道也保護膝蓋。</strong></p>
+                        </li>
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">護腕 (Wrist Support)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">固定手腕角度，維持旋轉穩定度。</p>
+                        </li>
+                        <li class="group">
+                            <div class="flex items-center mb-2">
+                                <span class="w-2 h-2 bg-white rounded-full mr-3 group-hover:bg-bowling-orange transition-colors"></span>
+                                <strong class="text-xl group-hover:text-bowling-orange transition-colors">止滑粉/貼布 (Tape)</strong>
+                            </div>
+                            <p class="text-gray-300 pl-5 text-sm">調節手指與球孔緊度，避免受傷。</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="venues" class="py-24 relative">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="zoom-in">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-bowling-blue mb-4">
+                    <span class="text-gradient border-b-4 border-bowling-orange pb-2">全台知名球館</span>
+                </h2>
+                <p class="text-gray-600 text-lg">從競技到娛樂，找到您的主場</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col group" data-aos="fade-up" data-aos-delay="100">
+                    <div class="h-2 bg-gradient-to-r from-orange-400 to-red-500"></div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-bowling-orange transition-colors">E7PLAY (三重館)</h3>
+                        <p class="text-sm text-gray-500 mb-4"><i class="fa-solid fa-star text-yellow-500 mr-2"></i> 複合式娛樂旗艦</p>
+                        
+                        <div class="w-full h-48 rounded-lg overflow-hidden mb-4 shadow-inner relative">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3614.202317807488!2d121.49856347537735!3d25.061130977798804!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442a9183ff93103%3A0xe30420bc346e03b3!2zRTdQTEFZ5LiJ6YeN6aSo!5e0!3m2!1szh-TW!2stw!4v1765364860847!5m2!1szh-TW!2stw" class="w-full h-full border-0 absolute inset-0" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+                        
+                        <p class="text-gray-600 text-sm leading-relaxed mt-2 flex-grow">一票玩到底！保齡球、飛鏢、撞球一次滿足，24小時營業的夜貓天堂。</p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <span class="text-xs font-bold text-bowling-blue flex items-center"><i class="fa-solid fa-location-dot mr-2"></i> 新北市三重區中央南路63號</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col group" data-aos="fade-up" data-aos-delay="200">
+                    <div class="h-2 bg-gradient-to-r from-blue-500 to-indigo-600"></div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-bowling-blue transition-colors">圓山保齡球館</h3>
+                        <p class="text-sm text-gray-500 mb-4"><i class="fa-solid fa-history text-blue-500 mr-2"></i> 台北經典老字號</p>
+                        
+                        <div class="w-full h-48 rounded-lg overflow-hidden mb-4 shadow-inner relative">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3613.5787747642494!2d121.5232741756708!3d25.082262177785147!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3442aeadf6f17b79%3A0x26c18f4c890e9a06!2zMTEx6Ie65YyX5biC5aOr5p6X5Y2A5Lit5bGx5YyX6Lev5LqU5q61NuiZnw!5e0!3m2!1szh-TW!2stw!4v1765364909369!5m2!1szh-TW!2stw" class="w-full h-full border-0 absolute inset-0" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+
+                        <p class="text-gray-600 text-sm leading-relaxed mt-2 flex-grow">專業球道保養，高手雲集。適合想要認真練球、參加比賽的保齡球愛好者。</p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <span class="text-xs font-bold text-bowling-blue flex items-center"><i class="fa-solid fa-location-dot mr-2"></i> 台北市士林區中山北路五段6號</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-2xl overflow-hidden hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col group" data-aos="fade-up" data-aos-delay="300">
+                    <div class="h-2 bg-gradient-to-r from-purple-400 to-pink-500"></div>
+                    <div class="p-6 flex flex-col flex-grow">
+                        <h3 class="text-2xl font-bold text-gray-800 mb-2 group-hover:text-purple-600 transition-colors">大魯閣 (新時代館)</h3>
+                        <p class="text-sm text-gray-500 mb-4"><i class="fa-solid fa-trophy text-orange-500 mr-2"></i> 台中複合式運動</p>
+                        
+                        <div class="w-full h-48 rounded-lg overflow-hidden mb-4 shadow-inner relative">
+                            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3641.016168216023!2d120.68518447564288!3d24.136070328409296!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x34693d15e9923069%3A0xa4360f21d81cf686!2z5aSn6a2v6Zaj5qOS5aOY55CD5L-d6b2h55CDIOaWsOaZguS7o-ikh-WQiOmkqA!5e0!3m2!1szh-TW!2stw!4v1765364932282!5m2!1szh-TW!2stw" class="w-full h-full border-0 absolute inset-0" allowfullscreen="" loading="lazy"></iframe>
+                        </div>
+
+                        <p class="text-gray-600 text-sm leading-relaxed mt-2 flex-grow">百貨商場內的時尚球館，結合棒球打擊場，是家庭親子週末放電首選。</p>
+                        <div class="mt-4 pt-4 border-t border-gray-200">
+                            <span class="text-xs font-bold text-bowling-blue flex items-center"><i class="fa-solid fa-location-dot mr-2"></i> 台中市東區復興路四段186號</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="videos" class="py-24 bg-gray-900 text-white relative">
+        <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] bg-blue-500/20 blur-[100px] rounded-full pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="font-serif text-4xl md:text-5xl font-bold text-bowling-orange mb-4">
+                    <span class="text-gradient-light border-b-4 border-white/20 pb-2">滾動的美學：影片專區</span>
+                </h2>
+                <p class="text-gray-400 text-lg">透過視覺與聽覺，感受力量與精準</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl shadow-xl hover:shadow-orange-500/20 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/5" data-aos="flip-left">
+                    <div class="aspect-video bg-black rounded-lg overflow-hidden relative shadow-lg">
+                        <iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/b-2gp3WcWjI?si=AM5U2ivObnsLGwH7" title="E7PLAY｜適合所有人的第一步:直球" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mt-4 pl-1">適合所有人的第一步:直球教學</h3>
+                    <p class="text-gray-400 text-sm mt-2 pl-1">E7PLAY 官方教學，針對零基礎玩家，從選球到犯規線前的最後一刻，完整解析。</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl shadow-xl hover:shadow-blue-500/20 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/5" data-aos="flip-left" data-aos-delay="100">
+                    <div class="aspect-video bg-black rounded-lg overflow-hidden relative shadow-lg">
+                        <iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/x3bJ3qN3lHY?si=wySGZInqpYVgnLhI" title="三種球路的國手對決" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mt-4 pl-1">保齡球 - 三種球路的國手對決！</h3>
+                    <p class="text-gray-400 text-sm mt-2 pl-1">曲球皇帝郭皇志 vs 亞運飛碟國手王亭雯。見識台灣頂尖選手不同球路的實際對抗。</p>
+                </div>
+
+                <div class="bg-gray-800/50 backdrop-blur-sm p-4 rounded-xl shadow-xl hover:shadow-purple-500/20 hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-white/5" data-aos="flip-left" data-aos-delay="200">
+                    <div class="aspect-video bg-black rounded-lg overflow-hidden relative shadow-lg">
+                        <iframe class="w-full h-full absolute inset-0" src="https://www.youtube.com/embed/o-wycA4o3Zc?si=Hlva8N0r-blUhB-7" title="提升球速與精準控球" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+                    </div>
+                    <h3 class="font-bold text-lg text-white mt-4 pl-1">進階教學：提升球速與控球</h3>
+                    <p class="text-gray-400 text-sm mt-2 pl-1">深入核心技巧，教你如何投出強力曲球 (Hook Ball) 並精準控制落點。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-gradient-to-r from-bowling-blue to-blue-900 text-white py-12 border-t border-white/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 flex flex-col md:flex-row justify-between items-center">
+            <div class="mb-6 md:mb-0 text-center md:text-left">
+                <div class="flex items-center justify-center md:justify-start gap-3 mb-3">
+                    <i class="fa-solid fa-bowling-ball text-bowling-orange text-3xl animate-bounce"></i>
+                    <span class="font-serif font-bold text-2xl tracking-wide">滾動的年代</span>
+                </div>
+                <p class="text-sm text-gray-300">專題製作團隊版權所有 © 2025.</p>
+                <p class="text-sm text-gray-300 mt-1 hover:text-white transition-colors cursor-pointer">聯繫我們：rolling.era@example.com</p>
+            </div>
+            <div class="flex space-x-8">
+                <a href="#" class="text-gray-400 hover:text-white hover:scale-125 transition-all transform"><i class="fa-brands fa-facebook text-2xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white hover:scale-125 transition-all transform"><i class="fa-brands fa-instagram text-2xl"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white hover:scale-125 transition-all transform"><i class="fa-brands fa-youtube text-2xl"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        // 初始化 AOS 動畫
+        AOS.init({
+            once: true, // 動畫只執行一次
+            offset: 100, // 觸發動畫的偏移量
+            duration: 800, // 動畫持續時間
+            easing: 'ease-out-cubic', // 動畫曲線
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+        });
+
+        const menuLinks = menu.querySelectorAll('a');
+        menuLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+            });
+        });
+    </script>
+</body>
+</html>
